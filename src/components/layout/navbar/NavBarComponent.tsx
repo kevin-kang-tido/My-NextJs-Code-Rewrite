@@ -1,14 +1,22 @@
+"use client"
 import React from "react";
 import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button} from "@nextui-org/react";
 // import {AcmeLogo} from "./AcmeLogo.jsx";
 import { navbarItem } from './menu';
 import { usePathname } from "next/navigation";
+// import { signOut, useSession } from "next-auth/react";
+import { signOut,useSession } from 'next-auth/react';
+import Image from "next/image";
+
 
 export default function NavBarComponent() {
   // const pathname = usePathname();
-  // if(pathname === "/login" || pathname === "/signup"){
-  //   return null
-  // }
+  const { data: session } = useSession();
+
+  const pathname = usePathname();
+  if(pathname === "/login" || pathname === "/register"){
+    return null
+  }
 
   return (
     <>
@@ -24,9 +32,9 @@ export default function NavBarComponent() {
               <Link
                 color="foreground" 
                 href={item.path}
-                // className={`${
-                //   pathname === item.path && "font-bold text-blue-800"
-                // }`}
+                className={`${
+                  pathname === item.path && "font-bold text-blue-800"
+                }`}
               >
                 {item.title}
               </Link>
@@ -35,8 +43,28 @@ export default function NavBarComponent() {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          {/* <Button as={link} ><Button/> */}
-          <Link href="/login">Login</Link>
+          {session ? (
+            <div className='flex gap-5'>
+             <Image
+                src={session.user?.image as string}
+                width={40}
+                height={40}
+                alt=""
+                className="object-cover rounded-full"
+              />
+               <Button
+                as={Link}
+                onClick={() => signOut()}
+                className="bg-gradient-to-r from-blue-500 to-pink-400 text-white"
+                // href="/login"
+                variant="flat"
+              >
+                Sign Out
+              </Button>
+            </div>):(<Button  as={Link} color="primary" href="/login" variant="flat">
+              Login
+            </Button>)
+          }
         </NavbarItem>
         <NavbarItem>
           <Button as={Link} color="primary" href="#" variant="flat">

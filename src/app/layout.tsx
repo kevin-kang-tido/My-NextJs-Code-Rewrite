@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import NavBarComponent from "@/components/layout/navbar/NavBarComponent";
 import SessionWrapper from "./SeeionWrapper";
+import NextUILayout from "./NextUIProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,9 +22,13 @@ export default function RootLayout({
     <SessionWrapper>
     <html lang="en">
       <body className={inter.className}>
-        <NavBarComponent/>
-        {children}
-        </body>
+        <NextUILayout>
+            <header>
+               <NavBarComponent/>
+            </header>  
+            {children}
+        </NextUILayout>
+      </body>
     </html>
     </SessionWrapper>
   );
