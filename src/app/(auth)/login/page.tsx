@@ -6,46 +6,96 @@ import email from 'next-auth/providers/email';
 import style from './style.module.css';
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
-import {Link} from "@nextui-org/react";
+import {Link, Button} from "@nextui-org/react";
 import { FaGithub } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import { useSession, signIn, signOut } from "next-auth/react"
 import Image from "next/image";
+import { BASE_URl} from "@/lib/constants";
 
 type ValuesType = {
     email: string;
-    password1: string;
+    password: string;
 }
 // validatationSchema
 const validationSchema = Yup.object().shape({
   email: Yup.string().email('Invalid Email').required('Required'),
-  password1: Yup.string().required("Password is Required"),
+  password: Yup.string().required("Password is Required"),
 })
 
 const initialValues:ValuesType = {
      email:'',
-     password1:'',
+     password:'',
      
 }
 export default function Login() {
-  
    // extracting data from usesession as session
-  const { data: session } = useSession()
+  const { data: session } = useSession();
+  // loading section 
+  const[loading, setLoading] = useState(false);
 
   const [showPassword,setShowPassword] = useState(false);
   const hanleShowPassword = () => {
     setShowPassword(!showPassword);
   }
+
+  // login to api
+ // handle all submit (submit all form to an api)
+  const handleAllSubmit = (values:ValuesType) => {
+    setLoading(true);
+    // fetch to domain api
+    fetch(`${BASE_URl}/api/user/login/`,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+      },
+      body:JSON.stringify(values),
+    })
+    .then((res) => res.json())
+    .then((data) =>{
+      console.log("Here is data login: ",data);
+      setLoading(false);
+    })
+    .catch((error) =>{
+      console.log(error);
+    })
+  }
+
+  if(loading){
+    return(
+      <div className={`${style.container}`}>
+        <h1 className='text-6xl font-bold'>
+          Loading....
+        </h1>
+      </div>
+    )
+  }
+
   // checking if sessions exists
   if (session) {
   // rendering components for logged in users
   return (
-    <div className="">
-      <div className="w-44 h-44 relative mb-4">
-      <Image src={session.user?.image as string} fill alt="" className="object-cover rounded-full"/></div>
-      <p className="text-2xl mb-2">Welcome <span className="font-bold">{session.user?.name}</span>. Signed In As</p>
-      <p className="font-bold mb-4">{session.user?.email}</p>
-      <button className="bg-red-600 py-2 px-6 rounded-md" onClick={() => signOut()}>Sign out</button></div>) 
+    <div className="rounded-lg flex items-center justify-center p-4">
+      <div className='bg-[#bfdbfe] rounded-lg p-12 shadow-lg'>
+        <div className="w-44 h-44 relative mb-4 ml-[80px]">
+          <Image src={session.user?.image as string} fill alt="" className="object-cover rounded-full"/>
+          </div>
+          <p className="text-2xl mb-2">Welcome <span className="font-bold">{session.user?.name}</span>. Signed In As</p>
+          <p className="font-bold mb-4">{session.user?.email}</p>
+          
+          <div className='flex justify-between'>
+              <button className="bg-red-600 py-2 px-6 rounded-md" onClick={() => signOut()}>Sign out</button>
+              <Button
+                as={Link} 
+                href='/' className='bg-[#0ea5e9] font-bold text-sm p-6' 
+                variant="flat"
+                >
+                  Home Page
+              </Button>
+          </div>
+       </div>
+      </div>
+      ) 
     }
   return (
     <main className={`${style.container}`}>
@@ -54,7 +104,8 @@ export default function Login() {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values,action)=>{
-            console.log(values);
+            handleAllSubmit(values);
+            // console.log(values);
           }}  
     >
       <Form>
@@ -71,12 +122,12 @@ export default function Login() {
         </div>
         {/* password 1 */}
         <div className='mb-5'>
-           <label htmlFor="password1"className={`${style.lable}`}>Password</label>
+           <label htmlFor="password"className={`${style.lable}`}>Password</label>
            <div className='relative'>
               <Field 
               type={showPassword? "text":"password"}
-               name="password1"
-               id="password1"
+               name="password"
+               id="password"
                className={`${style.input}`} />
                {/* hide and show pasword */}
               {!showPassword ? <FaEyeSlash
@@ -89,7 +140,7 @@ export default function Login() {
               }
            </div>
            <ErrorMessage 
-               name="password1"
+               name="password"
                component="div"
                className={`${style.error}`}
            />
@@ -100,7 +151,6 @@ export default function Login() {
         </button>
       </Form>
     </Formik>
-
     <div className="flex flex-col justify-center items-center">
       <p className="text-2xl mb-4"></p>
       <button className="w-full mb-4 flex gap-4 items-center bg-blue-600 py-2 px-6 rounded-md text-white " onClick={() => signIn('google')}><FaGoogle />Sign in with google</button>
