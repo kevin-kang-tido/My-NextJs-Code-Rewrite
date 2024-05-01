@@ -156,7 +156,8 @@ export default function Login() {
       <button className="w-full mb-4 flex gap-4 items-center bg-blue-600 py-2 px-6 rounded-md text-white " onClick={() => signIn('google')}><FaGoogle />Sign in with google</button>
       <button className="w-full mb-4 flex gap-4 items-center bg-none border-gray-300 border py-2 px-6 rounded-md " onClick={() => signIn('github')}> <FaGithub /> Sign in with github</button>
     </div>
-   <p className="my-4">Don't have an account?
+   <p className="my-4">
+        Don&apos;t have an account?{' '}
         <span className="font-bold">
           <Link href="/register">Sign up for free</Link>
         </span>
