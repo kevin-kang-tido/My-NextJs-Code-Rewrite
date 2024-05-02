@@ -7,6 +7,9 @@ import { usePathname } from "next/navigation";
 // import { signOut, useSession } from "next-auth/react";
 import { signOut,useSession } from 'next-auth/react';
 import Image from "next/image";
+import { FaCartPlus } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
+
 
 
 export default function NavBarComponent() {
@@ -42,6 +45,23 @@ export default function NavBarComponent() {
         ))}
       </NavbarContent>
       <NavbarContent justify="end">
+        {/* search section  */}
+        <NavbarItem className='ml-2'>
+          <Button as={Link} color="" href="#" variant="flat">
+            <FaSearch className='text-2xl text-[#1e293b]'/>
+          </Button>
+        </NavbarItem>
+      {/* cart section */}
+      <NavbarItem>
+          <Button as={Link} color="" href="#" variant="flat">
+            <FaCartPlus className='text-2xl text-[#1e293b]'/>
+            <div className=''>
+              <sup className='text-[14px] font-bold rounded-full p-[3px]   bg-[#db2777] text-[#f8fafc]'>
+                0
+              </sup>
+            </div>
+          </Button>
+        </NavbarItem>
         <NavbarItem className="hidden lg:flex">
           {session ? (
             <div className='flex gap-5'>
@@ -66,11 +86,11 @@ export default function NavBarComponent() {
             </Button>)
           }
         </NavbarItem>
-        <NavbarItem>
+        {/* <NavbarItem>
           <Button as={Link} color="primary" href="#" variant="flat">
              Dashboard
           </Button>
-        </NavbarItem>
+        </NavbarItem> */}
       </NavbarContent>
     </Navbar>
     </>

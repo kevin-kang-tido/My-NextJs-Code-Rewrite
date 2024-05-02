@@ -4,6 +4,10 @@ import "./globals.css";
 import NavBarComponent from "@/components/layout/navbar/NavBarComponent";
 import SessionWrapper from "./SeeionWrapper";
 import NextUILayout from "./NextUIProvider";
+import { Suspense } from "react";
+import LoadingComponent from "./loading";
+import { ErrorBoundary } from "next/dist/client/components/error-boundary";
+import Error from "./error";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,8 +29,17 @@ export default function RootLayout({
         <NextUILayout>
             <header>
                <NavBarComponent/>
-            </header>  
-            {children}
+            </header> 
+            <main>
+            <Suspense fallback={<LoadingComponent/>}>
+                <ErrorBoundary errorComponent={Error}>
+                {children}
+                </ErrorBoundary>
+            </Suspense> 
+            </main>
+            <footer>
+               
+            </footer>
         </NextUILayout>
       </body>
     </html>
